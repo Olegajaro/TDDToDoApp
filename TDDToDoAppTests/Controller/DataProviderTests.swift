@@ -33,6 +33,7 @@ class DataProviderTests: XCTestCase {
     override func tearDownWithError() throws {
         sut = nil
         tableView = nil
+        controller = nil
     }
     
     func test_Number_Of_Sections_Is_Two() {
@@ -77,12 +78,7 @@ class DataProviderTests: XCTestCase {
     }
     
     func test_Cell_For_Row_At_IndexPath_Dequeues_Cell_From_Table_View() {
-        let mockTableView = MockTableView()
-        mockTableView.dataSource = sut
-        mockTableView.register(
-            TaskCell.self,
-            forCellReuseIdentifier: String(describing: TaskCell.self)
-        )
+        let mockTableView = MockTableView.mockTableView(withDataSource: sut)
         
         sut.taskManager?.add(task: Task(title: "Foo"))
         mockTableView.reloadData()
@@ -93,16 +89,13 @@ class DataProviderTests: XCTestCase {
     }
     
     func test_Cell_For_Row_In_Section_Zero_Calls_Configure() {
-        tableView.register(
-            MockTaskCell.self,
-            forCellReuseIdentifier: String(describing: TaskCell.self)
-        )
+        let mockTableView = MockTableView.mockTableView(withDataSource: sut)
         
         let task = Task(title: "Foo")
         sut.taskManager?.add(task: task)
-        tableView.reloadData()
+        mockTableView.reloadData()
         
-        let cell = tableView.cellForRow(at: IndexPath(
+        let cell = mockTableView.cellForRow(at: IndexPath(
             row: 0, section: 0
         )) as! MockTaskCell
         
@@ -110,18 +103,17 @@ class DataProviderTests: XCTestCase {
     }
     
     func test_Cell_For_Row_In_Section_One_Calls_Configure() {
-        tableView.register(
-            MockTaskCell.self,
-            forCellReuseIdentifier: String(describing: TaskCell.self)
-        )
+        let mockTableView = MockTableView.mockTableView(withDataSource: sut)
         
         let task = Task(title: "Foo")
+        let task2 = Task(title: "Bar")
         sut.taskManager?.add(task: task)
+        sut.taskManager?.add(task: task2)
         sut.taskManager?.checkTask(atIndex: 0)
         
-        tableView.reloadData()
+        mockTableView.reloadData()
         
-        let cell = tableView.cellForRow(
+        let cell = mockTableView.cellForRow(
             at: IndexPath(row: 0, section: 1)
         ) as! MockTaskCell
         
@@ -132,6 +124,22 @@ class DataProviderTests: XCTestCase {
 extension DataProviderTests {
     class MockTableView: UITableView {
         var cellIsDequeued = false
+        
+        static func mockTableView(
+            withDataSource dataSource: UITableViewDataSource
+        ) -> MockTableView {
+            let mockTableView = MockTableView(
+                frame: CGRect(x: 0, y: 0, width: 375, height: 658),
+                style: .plain
+            )
+            mockTableView.dataSource = dataSource
+            mockTableView.register(
+                MockTaskCell.self,
+                forCellReuseIdentifier: String(describing: TaskCell.self)
+            )
+
+            return mockTableView
+        }
         
         override func dequeueReusableCell(
             withIdentifier identifier: String,
