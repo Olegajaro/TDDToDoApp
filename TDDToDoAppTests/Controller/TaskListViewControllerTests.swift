@@ -28,8 +28,6 @@ class TaskListViewControllerTests: XCTestCase {
     }
 
     func test_When_View_Is_Loaded_TavleView_Is_Not_Nil() {
-        
-        
         XCTAssertNotNil(sut.tableView)
     }
     
