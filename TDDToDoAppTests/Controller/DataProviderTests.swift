@@ -55,12 +55,12 @@ class DataProviderTests: XCTestCase {
     
     func test_Number_Of_Rows_In_Section_One_Is_Done_Tasks_Count() {
         sut.taskManager?.add(task: Task(title: "Foo"))
-        sut.taskManager?.checkTask(at: 0)
+        sut.taskManager?.checkTask(atIndex: 0)
         
         XCTAssertEqual(tableView.numberOfRows(inSection: 1), 1)
         
         sut.taskManager?.add(task: Task(title: "Bar"))
-        sut.taskManager?.checkTask(at: 0)
+        sut.taskManager?.checkTask(atIndex: 0)
                 
         tableView.reloadData()
 
@@ -91,6 +91,42 @@ class DataProviderTests: XCTestCase {
         
         XCTAssertTrue(mockTableView.cellIsDequeued)
     }
+    
+    func test_Cell_For_Row_In_Section_Zero_Calls_Configure() {
+        tableView.register(
+            MockTaskCell.self,
+            forCellReuseIdentifier: String(describing: TaskCell.self)
+        )
+        
+        let task = Task(title: "Foo")
+        sut.taskManager?.add(task: task)
+        tableView.reloadData()
+        
+        let cell = tableView.cellForRow(at: IndexPath(
+            row: 0, section: 0
+        )) as! MockTaskCell
+        
+        XCTAssertEqual(cell.task, task)
+    }
+    
+    func test_Cell_For_Row_In_Section_One_Calls_Configure() {
+        tableView.register(
+            MockTaskCell.self,
+            forCellReuseIdentifier: String(describing: TaskCell.self)
+        )
+        
+        let task = Task(title: "Foo")
+        sut.taskManager?.add(task: task)
+        sut.taskManager?.checkTask(atIndex: 0)
+        
+        tableView.reloadData()
+        
+        let cell = tableView.cellForRow(
+            at: IndexPath(row: 0, section: 1)
+        ) as! MockTaskCell
+        
+        XCTAssertEqual(cell.task, task)
+    }
 }
 
 extension DataProviderTests {
@@ -105,6 +141,14 @@ extension DataProviderTests {
             
             return super.dequeueReusableCell(withIdentifier: identifier,
                                              for: indexPath)
+        }
+    }
+    
+    class MockTaskCell: TaskCell {
+        var task: Task?
+        
+        override func configure(withTask task: Task) {
+            self.task = task
         }
     }
 }

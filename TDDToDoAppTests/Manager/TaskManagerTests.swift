@@ -52,7 +52,7 @@ class TaskManagerTests: XCTestCase {
         let task = Task(title: "Foo")
         sut.add(task: task)
         
-        sut.checkTask(at: 0)
+        sut.checkTask(atIndex: 0)
         
         XCTAssertEqual(sut.tasksCount, 0)
         XCTAssertEqual(sut.doneTasksCount, 1)
@@ -65,7 +65,7 @@ class TaskManagerTests: XCTestCase {
         sut.add(task: firstTask)
         sut.add(task: secondTask)
         
-        sut.checkTask(at: 0)
+        sut.checkTask(atIndex: 0)
         
         XCTAssertEqual(sut.task(at: 0), secondTask)
     }
@@ -74,7 +74,7 @@ class TaskManagerTests: XCTestCase {
         let task = Task(title: "Foo")
         sut.add(task: task)
         
-        sut.checkTask(at: 0)
+        sut.checkTask(atIndex: 0)
         let returnedTask = sut.doneTask(at: 0)
         
         XCTAssertEqual(returnedTask, task)
@@ -84,7 +84,7 @@ class TaskManagerTests: XCTestCase {
         sut.add(task: Task(title: "Foo"))
         sut.add(task: Task(title: "Bar"))
         
-        sut.checkTask(at: 0)
+        sut.checkTask(atIndex: 0)
         
         sut.removeAll()
         
