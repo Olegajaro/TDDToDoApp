@@ -28,6 +28,7 @@ class DataProviderTests: XCTestCase {
         
         tableView = controller.tableView
         tableView.dataSource = sut
+        tableView.delegate = sut
     }
 
     override func tearDownWithError() throws {
@@ -118,6 +119,24 @@ class DataProviderTests: XCTestCase {
         ) as! MockTaskCell
         
         XCTAssertEqual(cell.task, task)
+    }
+    
+    func test_Delete_Button_Title_Section_Zero_Shows_Done() {
+        let buttonTitle = tableView.delegate?.tableView?(
+            tableView,
+            titleForDeleteConfirmationButtonForRowAt: IndexPath(row: 0,
+                                                                section: 0))
+        
+        XCTAssertEqual(buttonTitle, "Done")
+    }
+    
+    func test_Delete_Button_Title_Section_One_Shows_Undone() {
+        let buttonTitle = tableView.delegate?.tableView?(
+            tableView,
+            titleForDeleteConfirmationButtonForRowAt: IndexPath(row: 0,
+                                                                section: 1))
+        
+        XCTAssertEqual(buttonTitle, "Undone")
     }
 }
 
