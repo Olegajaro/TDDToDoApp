@@ -46,7 +46,43 @@ class TaskCellTests: XCTestCase {
     }
     
     func test_Cell_Has_LocationLabel_In_ContentView() {
-        XCTAssertTrue(cell.titleLabel.isDescendant(of: cell.contentView))
+        XCTAssertTrue(cell.locationLabel.isDescendant(of: cell.contentView))
+    }
+    
+    func test_Cell_Has_DateLabel() {
+        XCTAssertNotNil(cell.dateLabel)
+    }
+    
+    func test_Cell_Has_DateLabel_In_ContentView() {
+        XCTAssertTrue(cell.dateLabel.isDescendant(of: cell.contentView))
+    }
+    
+    func test_Configure_Sets_Title() {
+        let task = Task(title: "Foo")
+        cell.configure(withTask: task)
+        
+        XCTAssertEqual(cell.titleLabel.text, task.title)
+    }
+    
+    func test_Configure_Sets_Date() {
+        let task = Task(title: "Foo")
+        cell.configure(withTask: task)
+        
+        let df = DateFormatter()
+        df.dateFormat = "dd.MM.yy"
+        
+        let date = task.date
+        let dateString = df.string(from: date!)
+        
+        XCTAssertEqual(cell.dateLabel.text, dateString)
+    }
+    
+    func test_Configure_Sets_Location_Name() {
+        let location = Location(name: "Foo")
+        let task = Task(title: "Bar", location: location)
+        cell.configure(withTask: task)
+        
+        XCTAssertEqual(cell.locationLabel.text, task.location?.name)
     }
 }
 
