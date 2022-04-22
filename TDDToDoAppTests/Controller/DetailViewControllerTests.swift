@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import CoreLocation
 @testable import TDDToDoApp
 
 class DetailViewControllerTests: XCTestCase {
@@ -43,10 +44,69 @@ class DetailViewControllerTests: XCTestCase {
         )
     }
     
+    func test_Has_LocationLabel() {
+        XCTAssertNotNil(sut.locationLabel)
+        XCTAssertTrue(
+            sut.locationLabel.isDescendant(of: sut.view)
+        )
+    }
+    
     func test_Has_MapView() {
         XCTAssertNotNil(sut.mapView)
         XCTAssertTrue(
             sut.mapView.isDescendant(of: sut.view)
         )
+    }
+    
+    private func setupTaskAndAppearanceTransition() {
+        let coordinate = CLLocationCoordinate2D(latitude: 43.92582475,
+                                                longitude: 39.3145893)
+        let date = Date(timeIntervalSince1970: 1546300800)
+        let task = Task(
+            title: "Foo",
+            description: "Bar",
+            location: Location(name: "Baz", coordinate: coordinate),
+            date: date
+        )
+        
+        sut.task = task
+        
+        sut.beginAppearanceTransition(true, animated: true)
+        sut.endAppearanceTransition()
+    }
+    
+    func test_Setting_Task_Sets_TitleLabel() {
+        setupTaskAndAppearanceTransition()
+        
+        XCTAssertEqual(sut.titleLabel.text, "Foo")
+    }
+    
+    func test_Setting_Task_Sets_DescriptionLabel() {
+        setupTaskAndAppearanceTransition()
+        
+        XCTAssertEqual(sut.descriptionLabel.text, "Bar")
+    }
+    
+    func test_Setting_Task_Sets_LocationLabel() {
+        setupTaskAndAppearanceTransition()
+        
+        XCTAssertEqual(sut.locationLabel.text, "Baz")
+    }
+    
+    func test_Setting_Task_Sets_DateLabel() {
+        setupTaskAndAppearanceTransition()
+        
+        XCTAssertEqual(sut.dateLabel.text, "01.01.19")
+    }
+    
+    func test_Setting_Task_Sets_MapView() {
+        setupTaskAndAppearanceTransition()
+        
+        XCTAssertEqual(sut.mapView.centerCoordinate.latitude,
+                       43.92582475,
+                       accuracy: 0.001)
+        XCTAssertEqual(sut.mapView.centerCoordinate.longitude,
+                       39.3145893,
+                       accuracy: 0.001)
     }
 }
