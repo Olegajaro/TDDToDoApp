@@ -193,7 +193,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <connections>
-                        <outlet property="adressTextField" destination="aq2-np-LNk" id="Rzf-ew-VgH"/>
+                        <outlet property="addressTextField" destination="aq2-np-LNk" id="Rzf-ew-VgH"/>
                         <outlet property="cancelButton" destination="Slk-uj-etm" id="eCA-Dg-MpC"/>
                         <outlet property="dateTextField" destination="dRa-ev-1yi" id="asW-Ke-7fi"/>
                         <outlet property="descriptionTextField" destination="Yxo-JL-MiE" id="PK9-UM-hrA"/>
