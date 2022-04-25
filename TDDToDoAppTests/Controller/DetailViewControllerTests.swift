@@ -65,8 +65,7 @@ class DetailViewControllerTests: XCTestCase {
         let task = Task(
             title: "Foo",
             description: "Bar",
-            location: Location(name: "Baz", coordinate: coordinate),
-            date: date
+            date: date, location: Location(name: "Baz", coordinate: coordinate)
         )
         
         sut.task = task

@@ -55,15 +55,14 @@ class NewTaskViewControllerTests: XCTestCase {
     }
     
     func test_Save_Uses_Geocoder_To_Convert_Coordinate_From_Address() {
-//        let df = DateFormatter()
-//        df.dateFormat = "dd.MM.yy"
-//        let date = df.date(from: "01.01.19")
-        let date = Date.init(timeIntervalSince1970: 1546290000)
+        let df = DateFormatter()
+        df.dateFormat = "dd.MM.yy"
+        let date = df.date(from: "01.01.19")
         
         sut.titleTextField.text = "Foo"
         sut.locationTextField.text = "Bar"
         sut.dateTextField.text = "01.01.19"
-        sut.addressTextField.text = "Уфа"
+        sut.addressTextField.text = "Сочи"
         sut.descriptionTextField.text = "Baz"
         
         sut.taskManager = TaskManager()
@@ -71,23 +70,36 @@ class NewTaskViewControllerTests: XCTestCase {
         sut.geocoder = mockGeocoder
         sut.save()
         
-        let coordinate = CLLocationCoordinate2D(latitude: 54.7373058,
-                                                longitude: 55.9722491)
+        let coordinate = CLLocationCoordinate2D(latitude: 43.5849997, longitude: 39.7187835)
         let location = Location(name: "Bar", coordinate: coordinate)
-        
         let generatedTask = Task(title: "Foo",
                                  description: "Baz",
-                                 location: location,
-                                 date: date)
+                                 date: date,
+                                 location: location)
         
         placemark = MockCLPlacemark()
         placemark.mockCoordinate = coordinate
-        
         mockGeocoder.completionHandler?([placemark], nil)
         
-        let task = sut.taskManager?.task(at: 0)
+        let task = sut.taskManager.task(at: 0)
         
-        XCTAssertEqual(task?.location, generatedTask.location)
+        XCTAssertEqual(task, generatedTask)
+    }
+    
+    func test_SaveButton_Has_Save_Method() {
+        let saveButton = sut.saveButton
+        
+        guard
+            let actions = saveButton?.actions(
+                forTarget: sut,
+                forControlEvent: .touchUpInside
+            )
+        else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertTrue(actions.contains("save"))
     }
 }
 
