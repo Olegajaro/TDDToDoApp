@@ -20,12 +20,28 @@ class APIClient {
     lazy var urlSession: URLSessionProtocol = URLSession.shared
     
     func login(
-        withName: String,
+        withName name: String,
         password: String,
         completionHadler: @escaping (String?, Error?) -> Void
     ) {
+        let allowedCharacters = CharacterSet.urlQueryAllowed
+        /*
+         URLFragmentAllowedCharacterSet  "#%<>[\]^`{|}
+         URLHostAllowedCharacterSet      "#%/<>?@\^`{|}
+         URLPasswordAllowedCharacterSet  "#%/:<>?@[\]^`{|}
+         URLPathAllowedCharacterSet      "#%;<>?[\]^`{|}
+         URLQueryAllowedCharacterSet     "#%<>[\]^`{|}
+         URLUserAllowedCharacterSet      "#%/:<>?@[\]^`
+         */
         guard
-            let url = URL(string: "https://todoapp.com/login")
+            let name = name.addingPercentEncoding(withAllowedCharacters: allowedCharacters),
+            let password = password.addingPercentEncoding(withAllowedCharacters: allowedCharacters)
+        else { fatalError() }
+        
+        let query = "name=\(name)&password=\(password)"
+        
+        guard
+            let url = URL(string: "https://todoapp.com/login?\(query)")
         else { fatalError() }
         
         urlSession.dataTask(with: url) { data, response, error in
