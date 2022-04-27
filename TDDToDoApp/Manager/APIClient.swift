@@ -9,7 +9,6 @@ import Foundation
 
 enum NetworkError: Error {
     case emptyData
-    case serverError
 }
 
 protocol URLSessionProtocol {
