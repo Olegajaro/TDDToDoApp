@@ -45,7 +45,11 @@ class APIClient {
         else { fatalError() }
         
         urlSession.dataTask(with: url) { data, response, error in
+            guard let data = data else { fatalError() }
+            let dictionary = try! JSONSerialization.jsonObject(with: data) as! [String : String]
             
+            let token = dictionary["token"]
+            completionHadler(token, nil)
         }.resume()
     }
 }
