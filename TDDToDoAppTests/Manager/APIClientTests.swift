@@ -79,6 +79,61 @@ class APIClientTests: XCTestCase {
             XCTAssertEqual(caughToken, "tokenString")
         }
     }
+    
+    func test_Login_Invalid_JSON_Returns_Error() {
+        mockURLSession = MockURLSession(data: Data(),
+                                        urlResponse: nil,
+                                        responseError: nil)
+        sut.urlSession = mockURLSession
+        let errorExpectation = expectation(description: "Error expectation")
+        
+        var caughtError: Error?
+        
+        sut.login(withName: "login", password: "password") { _, error in
+            caughtError = error
+            errorExpectation.fulfill()
+        }
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertNotNil(caughtError)
+        }
+    }
+    
+    func test_Login_When_Data_Is_Nil_Returns_Error() {
+        mockURLSession = MockURLSession(data: nil,
+                                        urlResponse: nil,
+                                        responseError: nil)
+        sut.urlSession = mockURLSession
+        let errorExpectation = expectation(description: "Error expectation")
+        
+        var caughtError: Error?
+        
+        sut.login(withName: "login", password: "password") { _, error in
+            caughtError = error
+            errorExpectation.fulfill()
+        }
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertNotNil(caughtError)
+        }
+    }
+    
+    func test_Login_When_Response_Error_Returns_Error() {
+        let jsonDataStub = "{\"token\": \"tokenString\"}".data(using: .utf8)
+        let error = NSError(domain: "Server error", code: 404, userInfo: nil)
+        mockURLSession = MockURLSession(data: jsonDataStub,
+                                        urlResponse: nil,
+                                        responseError: error)
+        sut.urlSession = mockURLSession
+        let errorExpectation = expectation(description: "Error expectation")
+        
+        var caughtError: Error?
+        sut.login(withName: "login", password: "password") { _, error in
+            caughtError = error
+            errorExpectation.fulfill()
+        }
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertNotNil(caughtError)
+        }
+    }
 }
 
 extension APIClientTests {
