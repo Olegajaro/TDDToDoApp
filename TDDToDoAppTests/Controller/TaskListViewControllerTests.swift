@@ -55,15 +55,12 @@ class TaskListViewControllerTests: XCTestCase {
         XCTAssertEqual(target as? TaskListViewController, sut)
     }
     
-    func test_Add_New_Task_Presents_NewTaskViewController() {
-        XCTAssertNil(sut.presentedViewController)
-        
+    private func presentingNewTaskViewController() -> NewTaskViewController {
         guard
             let newTaskButton = sut.navigationItem.rightBarButtonItem,
             let action = newTaskButton.action
         else {
-            XCTFail()
-            return
+            return NewTaskViewController()
         }
         
         //        UIApplication.shared.keyWindow?.rootViewController = sut
@@ -77,11 +74,20 @@ class TaskListViewControllerTests: XCTestCase {
                             with: newTaskButton,
                             waitUntilDone: true)
         
-        XCTAssertNotNil(sut.presentedViewController)
-        XCTAssertTrue(sut.presentedViewController is NewTaskViewController)
-        
         let newTaskViewController = sut.presentedViewController as! NewTaskViewController
         
-        XCTAssertNotNil(newTaskViewController.titleTextField)
+        return newTaskViewController
+    }
+    
+    func test_Add_New_Task_Presents_NewTaskViewController() {
+        let newTaskVC = presentingNewTaskViewController()
+        XCTAssertNotNil(newTaskVC.titleTextField)
+    }
+    
+    func test_Shares_Same_TaskManager_With_NewTaskVC() {
+        let newTaskViewController = presentingNewTaskViewController()
+        
+        XCTAssertNotNil(sut.dataProvider.taskManager)
+        XCTAssertTrue(newTaskViewController.taskManager === sut.dataProvider.taskManager)
     }
 }
