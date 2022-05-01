@@ -13,6 +13,8 @@ class TaskCellTests: XCTestCase {
     var cell: TaskCell!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let controller = storyboard.instantiateViewController(
             withIdentifier: String(describing: TaskListViewController.self)
@@ -31,6 +33,8 @@ class TaskCellTests: XCTestCase {
 
     override func tearDownWithError() throws {
         cell = nil
+        
+        try super.tearDownWithError()
     }
     
     func test_Cell_Has_TitleLabel() {
