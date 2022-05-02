@@ -100,6 +100,8 @@ extension DataProvider: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         guard
             let section = Section(rawValue: indexPath.section),
             let taskManager = taskManager
